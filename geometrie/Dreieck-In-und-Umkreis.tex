@@ -1,0 +1,112 @@
+\documentclass[tikz]{standalone}
+
+\usepackage{tkz-euclide}
+\usetkzobj{all}
+\usepackage{tkz-base}
+
+
+\makeatletter
+\def\tkzExchangeCoord(#1,#2){% 
+	\tkz@@extractxy{#1}%
+	\pgf@xa=\pgf@x\relax
+	\tkz@@extractxy{#2}%
+	\pgf@yb=\pgf@y\relax 
+	\path[coordinate](\pgf@xa,\pgf@yb) coordinate (tkzPointResult);}
+\makeatother
+
+
+\begin{document}
+	\begin{tikzpicture}[scale=1]
+		% Punkte definieren
+		\tkzDefPoint(0,0){A}
+		\tkzDefShiftPointCoord[A](0:8){B}
+		\tkzDefShiftPointCoord[A](45:9){C}
+		
+		% Zeichne das Dreick
+		\tkzDrawPolygon(A,B,C)
+		
+		% Punkte zeichen und bezeichnen
+		\tkzDrawPoints(A,B,C)
+		\tkzLabelPoints[below](A,B)
+		\tkzLabelPoints[above](C)
+		
+		% Dreiecksseiten bezeichnen
+		\tkzLabelSegment[above left](A,C){$b$}
+		\tkzLabelSegment[above right](B,C){$a$}
+		\tkzLabelSegment[below](A,B){$c$}
+		
+		% Winkel markieren
+		\tkzMarkAngle[arc=l,size=1.1cm](B,A,C)
+		\tkzLabelAngle[pos = 0.9](C,A,B){$\alpha$}
+		\tkzMarkAngle[arc=l,size=0.8cm](C,B,A)
+		\tkzLabelAngle[pos = 0.6](C,B,A){$\beta$}
+		\tkzMarkAngle[arc=l,size=0.9cm](A,C,B)
+		\tkzLabelAngle[pos = 0.6](B,C,A){$\gamma$}
+		
+		% Gebe die Winkelgrößen aus
+		%\tkzFindAngle(B,A,C)\tkzGetAngle{Walpha}
+		%\tkzFindAngle(C,B,A)\tkzGetAngle{Wbeta}
+		%\tkzFindAngle(A,C,B)\tkzGetAngle{Wgamma}
+		%\tkzText(-1,-1){$ \alpha =  $ \Walpha}
+		%\tkzText(-1,-2){$ \beta =  $ \Wbeta}
+		%\tkzText(-1,-3){$ \gamma =  $ \Wgamma}
+		
+		
+		% Winkelhalbierende bestimmen
+		\tkzDefLine[bisector](B,A,C) \tkzGetPoint{wa}
+		\tkzDefLine[bisector](C,B,A) \tkzGetPoint{wb}
+		\tkzDefLine[bisector](A,C,B) \tkzGetPoint{wc}
+		% Schnittpunkt (Innenkreismittelpunkt) bestimmen
+		\tkzInterLL(A,wa)(B,wb) \tkzGetPoint{W}
+		%%% Alternativ
+		%\tkzInCenter(A,B,C)\tkzGetPoint{W}
+		
+		% Winkelhalbierende zeichnen
+		%\tkzDrawLines(A,wa B,wb C,wc)
+		% Umkreis zeichnen
+		\tkzDefCircle[in](A,B,C)
+		\tkzGetLength{rIN} %\tkzGetPoint{I}
+		\tkzDrawCircle[R,blue](W,\rIN pt)
+		
+		% Mittelpunkte der Seiten definieren
+		\tkzDefMidPoint(A,B)\tkzGetPoint{Mab}
+		\tkzDefMidPoint(A,C)\tkzGetPoint{Mac}
+		\tkzDefMidPoint(B,C)\tkzGetPoint{Mbc}
+		
+		% Mittelsenkrechte definieren
+		\tkzDefLine[orthogonal=through Mab](A,B) \tkzGetPoint{mab}
+		\tkzDefLine[orthogonal=through Mac](C,A) \tkzGetPoint{mac}
+		\tkzDefLine[orthogonal=through Mbc](B,C) \tkzGetPoint{mbc}
+		% Schnittpunkt (Umkreismittelpunk) bestimmen
+		\tkzInterLL(Mab,mab)(Mac,mac) \tkzGetPoint{M}
+		%%% Alternativ
+		%\tkzCircumCenter(A,B,C)\tkzGetPoint{M}
+		
+		% Mittelsenkrechte zeichnen
+		%\tkzDrawLines(Mab,mab Mac,mac Mbc,mbc)
+		% Umkreis zeichnen
+		\tkzDrawCircle(M,A)
+		%\tkzDefCircle[circum](A,B,C)
+		%\tkzGetLength{rCI} %\tkzGetPoint{K}
+		%\tkzDrawCircle[R,red](M,\rCI pt)
+		
+		%Schwerpunkt definieren
+		%\tkzDefBarycentricPoint(A=1,B=1,C=1)\tkzGetPoint{S}
+		\tkzCentroid(A,B,C)\tkzGetPoint{S}
+		
+		% Höhen definieren
+		\tkzDefLine[orthogonal=through A](C,B) \tkzGetPoint{ha}
+		\tkzDefLine[orthogonal=through B](A,C) \tkzGetPoint{hb}
+		\tkzDefLine[orthogonal=through C](B,A) \tkzGetPoint{hc}
+		% Schnittpunkt bestimmen
+		\tkzInterLL(A,ha)(B,hb) \tkzGetPoint{H}
+		% Höhen zeichnen
+		%\tkzDrawLines(A,ha B,hb C,hc)
+		
+		% besondere Punkte zeichnen
+		\tkzDrawPoints(S,W,M,H)
+		% besondere Punkte bezeichnen
+		\tkzLabelPoints[below](S,M,H)
+		\tkzLabelPoints[above](W)
+	\end{tikzpicture}
+\end{document}
